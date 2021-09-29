@@ -1,9 +1,9 @@
 <template>
   <div class="calendar">
     <div class="calendar__nav">
-      <span @click="switch_month('prev')" class="calendar__nav--button"> &lt; </span>
+      <span @click="switch_month('prev')" class="calendar__nav--button"></span>
       <span class="calendar__nav--month">{{month}}</span>
-      <span @click="switch_month('next')" class="calendar__nav--button"> &gt; </span>
+      <span @click="switch_month('next')" class="calendar__nav--button"></span>
     </div>
     <div class="calendar__module">
       <div class="calendar__days">
@@ -22,7 +22,7 @@
           <span class="calendar__items--card__number"
                 :class="{weekend: weekends(day.id)}">{{ day.date.format('D') }}</span>
           <div v-if="day.events" class="calendar__items--card__events">
-            <div class="calendar__items--card__event" v-for="(event) in day.events"  :key="event.id">
+            <div class="calendar__items--card__event" v-for="(event) in day.events" :key="event.id">
               <span :class="'calendar__items--card__event-' + event.type">{{event.eventTime}} {{event.name}}</span>
             </div>
           </div>
@@ -67,7 +67,7 @@
     },
     methods: {
       today(day) {
-        return ( moment(this.now.format('YYYY.MM.DD')).isSame(day.format('YYYY.MM.DD')) )
+        return true//( moment(this.now.format('YYYY.MM.DD')).isSame(day.format('YYYY.MM.DD')) )
       },
       pastDay(day) {
         return moment(day).isSameOrBefore()
@@ -130,6 +130,7 @@
           // если есть совпадение
           if (indexDate !== -1) {
             if (dateEventsArr[indexDate]['events'] && dateEventsArr[indexDate]['events'].length !== 0) {
+              item['eventTime'] = moment(item['date']).format('HH:mm')
               dateEventsArr[indexDate]['events'].push(item)
             } else {
               item['eventTime'] = moment(item['date']).format('HH:mm')
@@ -139,7 +140,7 @@
           }
         })
         return dateEventsArr
-      }
+      },
     }
   }
 </script>
@@ -170,6 +171,28 @@
 
         &--button
           cursor pointer
+          position relative
+          &:before
+            content " "
+            z-index 99
+            position absolute
+            width 0
+            height 0
+            top -7px
+            &:hover
+              opacity .7
+
+          &:first-child
+            &:before
+              border-top 10px solid transparent
+              border-bottom 10px solid transparent
+              border-right 10px solid $green
+          &:last-child
+            &:before
+              border-top 10px solid transparent
+              border-bottom 10px solid transparent
+              border-left 10px solid $green
+
 
           &:hover
             font-weight 700
@@ -233,6 +256,7 @@
         &--card__events
           position absolute
           top 20px
+
           &:hover
             z-index 9
 
@@ -244,6 +268,11 @@
 
           > span
             cursor default
+            padding .2rem
+            display block
+            position absolute
+            font-size .8rem
+
           &:hover
             width 100%
             overflow inherit
@@ -251,8 +280,10 @@
 
           &-green
             background-color $green
+
           &-red
             background-color $red
+
           &-orange
             background-color $orange
 </style>
