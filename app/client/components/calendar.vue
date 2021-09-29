@@ -17,12 +17,12 @@
       </div>
       <hr>
       <div class="calendar__items">
-        <div v-for="(day) in dates" :key="day.id" :class="{ today: today(day.date), past: pastDay(day.date)  }"
+        <div v-for="(day) in dates" :key="day.id" :class="{ today: today(day.date), past: pastDay(day.date)}"
              class="calendar__items--card">
           <span class="calendar__items--card__number"
                 :class="{weekend: weekends(day.id)}">{{ day.date.format('D') }}</span>
           <div v-if="day.events" class="calendar__items--card__events">
-            <div class="calendar__items--card__event" v-for="(event) in day.events" :key="day.id">
+            <div class="calendar__items--card__event" v-for="(event) in day.events"  :key="event.id">
               <span :class="'calendar__items--card__event-' + event.type">{{event.eventTime}} {{event.name}}</span>
             </div>
           </div>
@@ -46,7 +46,6 @@
         selectMonthYear: [],
         types: ['green', 'red', 'orange'],
         dateEvents: [],
-        preloader: false
       }
     },
     computed: {
@@ -119,7 +118,6 @@
 
         // проходимся по событиям
         this.events.forEach((item) => {
-
           let dateEvent = moment(item['date']).format('YYYY.MM.DD')
 
           // ищем в массиве совпадение по дате
@@ -132,11 +130,9 @@
           // если есть совпадение
           if (indexDate !== -1) {
             if (dateEventsArr[indexDate]['events'] && dateEventsArr[indexDate]['events'].length !== 0) {
-              // если время раньше то добавляем в массив в начало  / сортировка по времени
               dateEventsArr[indexDate]['events'].push(item)
             } else {
-              let eventTime = moment(item['date']).format('HH:mm')
-              item['eventTime'] = eventTime
+              item['eventTime'] = moment(item['date']).format('HH:mm')
               dateEventsArr[indexDate]['events'] = [item]
               dateEventsArr[indexDate]['date'] = days[indexDate]
             }
